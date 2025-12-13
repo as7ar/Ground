@@ -1,6 +1,7 @@
 name: Ground
 version: ${version}
 main: kr.astar.ground.Ground
+loader: kr.astar.ground.GroundLoader
 api-version: '1.21'
 authors: [ AS7AR ]
 website: https://grassproject.github.io
