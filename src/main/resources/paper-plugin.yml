@@ -1,0 +1,10 @@
+name: Ground
+version: ${version}
+main: kr.astar.ground.Ground
+api-version: '1.21'
+authors: [ AS7AR ]
+website: https://grassproject.github.io
+dependencies:
+  server:
+    WorldGuard:
+      required: true
