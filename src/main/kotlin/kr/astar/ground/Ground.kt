@@ -1,7 +1,11 @@
 package kr.astar.ground
 
+import kr.astar.ground.events.PlayerChangeRegionEvent
+import kr.astar.ground.listeners.BukkitListener
+import kr.astar.ground.utils.GNDLogger
 import kr.astar.ground.utils.Utils.bannerGenerator
 import kr.astar.ground.utils.toMiniMessage
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -13,13 +17,22 @@ class Ground : JavaPlugin() {
             private set
     }
 
+    val logger= GNDLogger()
+
     override fun onLoad() {
         plugin= this
     }
 
-
     override fun onEnable() {
         saveDefaultConfig()
+
+        logger.info("Ground Enabled!")
+
+        server.pluginManager.registerEvents(PlayerChangeRegionEvent(
+            null, null, Bukkit.getPlayerExact("dummy")
+        ), this)
+        server.pluginManager.registerEvents(BukkitListener(), this)
+
         printLogo()
     }
 
