@@ -1,1 +1,10 @@
+lang: ko_KR
+
+region:
+  # prefix of GROUND region
+  prefix: GND # ex) GND-1
+  # max count of own region
+  max-own: 2
+  max-members: 10
+
 debug: false

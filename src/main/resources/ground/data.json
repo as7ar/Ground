@@ -1,0 +1,10 @@
+{
+  "GND-0": {
+    "world": "(UUID)",
+    "owner": "(UUID)",
+    "members": [
+      "(UUID)",
+      "(UUID)"
+    ]
+  }
+}

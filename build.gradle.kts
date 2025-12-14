@@ -13,6 +13,7 @@ repositories {
         name = "papermc-repo"
     }
     maven("https://maven.enginehub.org/repo/")
+    maven("https://repo.codemc.io/repository/maven-snapshots/")
 }
 
 dependencies {
@@ -21,6 +22,7 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT") {
         exclude("com.google.code.gson", "gson")
     }
+    compileOnly("net.wesjd:anvilgui:1.10.6-SNAPSHOT")
 }
 
 val targetJavaVersion = 21
@@ -39,4 +41,19 @@ tasks.processResources {
     filesMatching("paper-plugin.yml") {
         expand(props)
     }
+}
+
+tasks.shadowJar {
+    minimize {
+        exclude("kr.astar.*")
+    }
+    archiveFileName.set("Ground-${version}.jar")
+    archiveClassifier.set("all")
+    mergeServiceFiles()
+
+    dependencies {
+        include(dependency("net.wesjd:anvilgui:1.10.6-SNAPSHOT"))
+    }
+
+    destinationDirectory=file("C:\\Users\\PC\\Desktop\\Test_Server\\21.8\\plugins")
 }
