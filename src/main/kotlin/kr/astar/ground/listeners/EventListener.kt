@@ -18,7 +18,7 @@ class EventListener: Listener {
 
     @EventHandler(
         ignoreCancelled = true,
-        priority = org.bukkit.event.EventPriority.HIGH
+        priority = org.bukkit.event.EventPriority.LOWEST
     )
     fun PlayerMoveEvent.onMove() {
         if (
@@ -44,7 +44,7 @@ class EventListener: Listener {
 
     @EventHandler(
         ignoreCancelled = true,
-        priority = org.bukkit.event.EventPriority.HIGH
+        priority = org.bukkit.event.EventPriority.LOWEST
     )
     fun PlayerChangeRegionEvent.onChange() {
 

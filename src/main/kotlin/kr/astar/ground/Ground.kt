@@ -1,16 +1,25 @@
 package kr.astar.ground
 
-import kr.astar.ground.events.PlayerChangeRegionEvent
+import kr.astar.ground.commands.GNDCommand
 import kr.astar.ground.listeners.BukkitListener
 import kr.astar.ground.listeners.EventListener
+import kr.astar.ground.utils.Debugger
+import kr.astar.ground.utils.Debugger.debug
 import kr.astar.ground.utils.GNDLogger
 import kr.astar.ground.utils.Utils.bannerGenerator
 import kr.astar.ground.utils.toMiniMessage
-import org.bukkit.Bukkit
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.translation.GlobalTranslator
+import net.kyori.adventure.translation.TranslationStore
+import net.kyori.adventure.util.UTF8ResourceBundleControl
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.InputStreamReader
+import java.text.MessageFormat
+import java.util.*
+
 
 class Ground : JavaPlugin() {
     companion object {
@@ -26,13 +35,30 @@ class Ground : JavaPlugin() {
 
     override fun onEnable() {
         saveDefaultConfig()
+        printLogo()
 
-        logger.info("Ground Enabled!")
+        debug("Ground Enabled!")
 
+        translateSet()
+
+//        logger.info(Component.translatable("test.key", Component.text("Ground")))
+
+        debug("Registering Events...")
         server.pluginManager.registerEvents(EventListener(), this)
         server.pluginManager.registerEvents(BukkitListener(), this)
 
-        printLogo()
+        debug("Loading Commands...")
+        GNDCommand().register()
+    }
+
+    private fun translateSet() {
+        val store = TranslationStore.messageFormat(Key.key("ground:translations"))
+
+        val bundle = ResourceBundle.getBundle("locale.Bundle",
+            Locale.KOREAN, UTF8ResourceBundleControl.get()
+        )
+        store.registerAll(Locale.KOREAN, bundle, true)
+        GlobalTranslator.translator().addSource(store)
     }
 
     private fun printLogo() {

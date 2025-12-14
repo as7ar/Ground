@@ -15,8 +15,13 @@ object Utils {
         val topBottom = "+" + "=".repeat(innerWidth) + "+"
         val separator = "|" + "=".repeat(innerWidth) + "|"
 
-        val info = "Version: $version     author: $author"
-            .padEnd(innerWidth, ' ')
+        val left = "Version: $version"
+        val right = "author: $author"
+
+        val spaceCount = (innerWidth - left.length - right.length)
+            .coerceAtLeast(1)
+
+        val info = left + " ".repeat(spaceCount) + right
 
         val result = mutableListOf<String>()
         result += topBottom
