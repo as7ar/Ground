@@ -1,7 +1,6 @@
 {
-  "GND-0": {
-    "world": "(UUID)",
-    "owner": "(UUID)",
+  "(UUID)": {
+    "owned": [],
     "members": [
       "(UUID)",
       "(UUID)"

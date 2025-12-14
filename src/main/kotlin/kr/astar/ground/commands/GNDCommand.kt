@@ -3,7 +3,7 @@ package kr.astar.ground.commands
 import org.bukkit.command.CommandSender
 
 class GNDCommand: ClassicCommand(
-    "ground", listOf("땅", "gnd"),
+    "data", listOf("땅", "gnd"),
     "Ground Plugin Default Command", "astar.ground.command"
 ) {
     override fun execute(

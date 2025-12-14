@@ -5,6 +5,6 @@ region:
   prefix: GND # ex) GND-1
   # max count of own region
   max-own: 2
-  max-members: 10
+  max-members: 10 # include OWNER
 
 debug: false
