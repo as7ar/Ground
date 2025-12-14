@@ -2,6 +2,7 @@ package kr.astar.ground
 
 import kr.astar.ground.events.PlayerChangeRegionEvent
 import kr.astar.ground.listeners.BukkitListener
+import kr.astar.ground.listeners.EventListener
 import kr.astar.ground.utils.GNDLogger
 import kr.astar.ground.utils.Utils.bannerGenerator
 import kr.astar.ground.utils.toMiniMessage
@@ -28,9 +29,7 @@ class Ground : JavaPlugin() {
 
         logger.info("Ground Enabled!")
 
-        server.pluginManager.registerEvents(PlayerChangeRegionEvent(
-            null, null, Bukkit.getPlayerExact("dummy")
-        ), this)
+        server.pluginManager.registerEvents(EventListener(), this)
         server.pluginManager.registerEvents(BukkitListener(), this)
 
         printLogo()

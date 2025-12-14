@@ -5,12 +5,10 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 
-class PlayerChangeRegionEvent(
-    val pastRegion: String?,
-    val newRegion: String?,
-    player: Player
-) : PlayerEvent(player), Cancellable {
-
+class PlayerRegionLeaveEvent(
+    player: Player,
+    val region: String
+): PlayerEvent(player), Cancellable {
     private var cancelled = false
     override fun isCancelled() = cancelled
     override fun setCancelled(cancel: Boolean) {
