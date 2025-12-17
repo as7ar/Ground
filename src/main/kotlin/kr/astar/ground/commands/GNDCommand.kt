@@ -1,6 +1,7 @@
 package kr.astar.ground.commands
 
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 class GNDCommand: ClassicCommand(
     "data", listOf("땅", "gnd"),
@@ -10,6 +11,7 @@ class GNDCommand: ClassicCommand(
         sender: CommandSender,
         args: Array<out String>
     ): Boolean {
+        if (sender !is Player) return true
 
         return true
     }

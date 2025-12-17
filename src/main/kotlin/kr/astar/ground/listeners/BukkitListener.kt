@@ -10,6 +10,7 @@ import kr.astar.ground.utils.Utils.getRegion
 import kr.astar.ground.utils.toComponent
 import kr.astar.ground.utils.translatable
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractEvent
@@ -64,13 +65,21 @@ class BukkitListener: Listener {
     fun PlayerRegionEnterEvent.onEnter() {
         val groundManager = Ground.groundManager
         val ground = groundManager.getGround(region)
-        val ownerName = runCatching {
-            plugin.server.getOfflinePlayer(ground.owner).name ?: "Unknown"
-        }.getOrNull() ?: "Unknown"
-
-
+        val welcomeMsg= groundManager.getWelcomeContent(ground.owner)
+        player.showTitle(Title.title("".toComponent(), "content.ground.join".translatable(
+                "${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
+            ))
+        )
+        player.sendActionBar(welcomeMsg.toComponent())
     }
 
     @EventHandler
-    fun PlayerRegionLeaveEvent.onLeave() {}
+    fun PlayerRegionLeaveEvent.onLeave() {
+        val groundManager = Ground.groundManager
+        val ground = groundManager.getGround(region)
+        player.showTitle(Title.title("".toComponent(), "content.ground.leave".translatable(
+                "${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
+            ))
+        )
+    }
 }

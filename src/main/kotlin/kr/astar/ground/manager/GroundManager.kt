@@ -151,6 +151,16 @@ class GroundManager {
         itemData.save(itemFile)
     }
 
+    // 사용자 지정 환영 메세지
+    fun getWelcomeContent(player: UUID): String {
+        return cwData.getString(player.toString()) ?: ""
+    }
+
+    fun setWelcomeContent(player: UUID, content: String) {
+        cwData.set(player.toString(), content)
+        cwData.save(cwFile)
+    }
+
     private fun save() {
         groundFile.writeText(gson.toJson(groundData), Charsets.UTF_8)
         usersFile.writeText(gson.toJson(usersData), Charsets.UTF_8)

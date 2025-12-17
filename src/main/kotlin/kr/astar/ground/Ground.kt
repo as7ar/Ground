@@ -21,7 +21,6 @@ import java.io.InputStreamReader
 import java.text.MessageFormat
 import java.util.*
 
-
 class Ground : JavaPlugin() {
     companion object {
         lateinit var plugin: Ground
