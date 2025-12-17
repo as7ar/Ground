@@ -21,11 +21,13 @@ class GroundManager {
     private val groundFile = File(folder, "ground.json")
     private val usersFile = File(folder, "user.json")
     private var itemFile = File(folder, "item")
+    private var cwFile = File(folder, "custom_welcome.yml")
 
     // 데이터 객체 생성
     private var groundData = JsonObject()
     private var usersData = JsonObject()
     private var itemData = YamlConfiguration.loadConfiguration(itemFile)
+    private var cwData = YamlConfiguration.loadConfiguration(cwFile)
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
 

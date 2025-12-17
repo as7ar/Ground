@@ -196,3 +196,13 @@ object StringUtils {
 fun Component.toLegacyString(): String = StringUtils.toLegacyString(this)
 fun String.toMiniMessage(): Component = StringUtils.toMiniMessage(this)
 fun String.toComponent(): Component = StringUtils.toComponent(this.replace("&", "§"))
+fun String.translatable(vararg args: Any): Component {
+    val componentArgs = args.map {
+        when (it) {
+            is String -> it.toComponent()
+            is Component -> it
+            else -> Component.text(it.toString())
+        }
+    }.toTypedArray()
+    return Component.translatable(this, *componentArgs)
+}
