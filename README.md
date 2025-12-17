@@ -6,7 +6,7 @@
  - WorldGuard >= 7.1.0-SNAPSHOT
 
 ## 🔨 Build
-> ![WARNING]
+> [!WARNING]
 > Requires JDK 21 or over to build.
 
 ```shell
