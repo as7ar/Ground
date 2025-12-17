@@ -4,7 +4,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class GNDCommand: ClassicCommand(
-    "data", listOf("땅", "gnd"),
+    "ground", listOf("땅", "gnd"),
     "Ground Plugin Default Command", "astar.ground.command"
 ) {
     override fun execute(
