@@ -5,18 +5,27 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
+import kr.astar.ground.exception.GroundNotFound
+import kr.astar.ground.utils.Utils.decodeItem
+import kr.astar.ground.utils.Utils.encodeItem
+import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.inventory.ItemStack
 import java.io.File
 import java.util.UUID
 
 class GroundManager {
     private val plugin = Ground.plugin
 
+    // 데이터 파일 경로
     private val folder = File(plugin.dataFolder, "data")
     private val groundFile = File(folder, "ground.json")
     private val usersFile = File(folder, "user.json")
+    private var itemFile = File(folder, "item")
 
+    // 데이터 객체 생성
     private var groundData = JsonObject()
     private var usersData = JsonObject()
+    private var itemData = YamlConfiguration.loadConfiguration(itemFile)
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
@@ -26,6 +35,7 @@ class GroundManager {
 
     init { load() }
 
+    // 땅 등록
     fun addGround(gnddata: GNData) {
         val userKey = gnddata.owner.toString()
 
@@ -49,8 +59,9 @@ class GroundManager {
         save()
     }
 
+    // 땅 정보 가져오기
     fun getGround(id: String): GNData {
-        val obj = groundData[id]?.asJsonObject ?: error("Ground not found: $id")
+        val obj = groundData[id]?.asJsonObject ?: throw GroundNotFound(id)
 
         return GNData(
             id = id,
@@ -59,6 +70,7 @@ class GroundManager {
         )
     }
 
+    // 땅 정보 제거
     fun removeGround(regionId: String) {
         val ground = groundData[regionId]?.asJsonObject
             ?: error("Ground not found: $regionId")
@@ -79,18 +91,21 @@ class GroundManager {
     }
 
 
+    // 플레이어 소유 땅 목록
     fun getOwned(player: UUID): Set<String> {
         val user = usersData[player.toString()]?.asJsonObject ?: return emptySet()
         val arr = user["owned"]?.asJsonArray ?: return emptySet()
         return arr.map { it.asString }.toSet()
     }
 
+    // 소유권 공유 멤버 목록
     fun getMembers(player: UUID): Set<UUID> {
         val user = usersData[player.toString()]?.asJsonObject ?: return emptySet()
         val arr = user["members"]?.asJsonArray ?: return emptySet()
         return arr.map { UUID.fromString(it.asString) }.toSet()
     }
 
+    // 소유권 공유 멤버 추가
     fun addMember(player: UUID, member: UUID) {
         val members=getMembers(player)
         if (members.contains(member)) return
@@ -98,6 +113,7 @@ class GroundManager {
         setMembers(player, members)
     }
 
+    // 소유권 공유 멤버 제거
     fun removeMember(player: UUID, member: UUID) {
         val members=getMembers(player)
         if (!members.contains(member)) return
@@ -105,6 +121,7 @@ class GroundManager {
         setMembers(player, members)
     }
 
+    // 소유권 공유 멤버 목록 설정
     fun setMembers(player: UUID, members: Set<UUID>) {
         if (members.size > MAX_MEMBER) error("too many members")
 
@@ -117,6 +134,19 @@ class GroundManager {
 
         user.add("members", arr)
         save()
+    }
+
+    // 아이템 불러오기
+    fun getItem(string: String): ItemStack {
+        itemFile = File(folder, "item")
+        return decodeItem(itemData.getString(string))
+            ?: error("Item not found: $string")
+    }
+
+    // 아이템 경로 설정
+    fun setItem(string: String, item: ItemStack) {
+        itemData.set(string, encodeItem(item))
+        itemData.save(itemFile)
     }
 
     private fun save() {

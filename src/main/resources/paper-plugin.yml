@@ -9,3 +9,12 @@ dependencies:
   server:
     WorldGuard:
       required: true
+
+permissions:
+  astar.ground.*:
+    default: op
+    children:
+      astar.ground.command:
+        default: op
+      astar.ground.purchase:
+        default: op

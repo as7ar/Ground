@@ -3,6 +3,7 @@ package kr.astar.ground
 import kr.astar.ground.commands.GNDCommand
 import kr.astar.ground.listeners.BukkitListener
 import kr.astar.ground.listeners.EventListener
+import kr.astar.ground.manager.GroundManager
 import kr.astar.ground.utils.Debugger
 import kr.astar.ground.utils.Debugger.debug
 import kr.astar.ground.utils.GNDLogger
@@ -25,12 +26,15 @@ class Ground : JavaPlugin() {
     companion object {
         lateinit var plugin: Ground
             private set
+        lateinit var groundManager: GroundManager
+            private set
     }
 
     val logger= GNDLogger()
 
     override fun onLoad() {
         plugin= this
+        groundManager = GroundManager()
     }
 
     override fun onEnable() {

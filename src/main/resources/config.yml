@@ -7,4 +7,10 @@ region:
   max-own: 2
   max-members: 10 # include OWNER
 
+  message:
+    join:
+      content: '{player}님이 GROUND 지역에 입장하셨습니다.'
+    leave:
+      content: '{player}님이 GROUND 지역에서 퇴장하셨습니다.'
+
 debug: false
