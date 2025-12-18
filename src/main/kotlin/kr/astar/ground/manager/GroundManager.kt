@@ -32,8 +32,8 @@ class GroundManager {
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
     val gndPrefix = plugin.config.getString("region.prefix") ?: "GND"
-    private val MAX_OWN = plugin.config.getInt("region.max-own")
-    private val MAX_MEMBER = plugin.config.getInt("region.max-members")
+    val MAX_OWN = plugin.config.getInt("region.max-own")
+    val MAX_MEMBER = plugin.config.getInt("region.max-members")
 
     init { load() }
 
@@ -72,6 +72,18 @@ class GroundManager {
         )
     }
 
+    // 모든 땅 목록 가져오기
+    fun getGroundList(): List<GNData> {
+        return groundData.entrySet().map { (key, value) ->
+            val obj = value.asJsonObject
+            GNData(
+                id = key,
+                world = UUID.fromString(obj["world"].asString),
+                owner = UUID.fromString(obj["owner"].asString)
+            )
+        }
+    }
+
     // 땅 정보 제거
     fun removeGround(regionId: String) {
         val ground = groundData[regionId]?.asJsonObject
@@ -92,7 +104,6 @@ class GroundManager {
         save()
     }
 
-
     // 플레이어 소유 땅 목록
     fun getOwned(player: UUID): Set<String> {
         val user = usersData[player.toString()]?.asJsonObject ?: return emptySet()
@@ -101,30 +112,36 @@ class GroundManager {
     }
 
     // 소유권 공유 멤버 목록
-    fun getMembers(player: UUID): Set<UUID> {
+    fun getCrewList(player: UUID): Set<UUID> {
         val user = usersData[player.toString()]?.asJsonObject ?: return emptySet()
         val arr = user["members"]?.asJsonArray ?: return emptySet()
         return arr.map { UUID.fromString(it.asString) }.toSet()
     }
 
     // 소유권 공유 멤버 추가
-    fun addMember(player: UUID, member: UUID) {
-        val members=getMembers(player)
-        if (members.contains(member)) return
-        members.toMutableList().add(member)
-        setMembers(player, members)
+    fun addCrew(player: UUID, member: UUID): Boolean {
+        try {
+            val members=getCrewList(player)
+            if (members.contains(member)) return false
+            members.toMutableList().add(member)
+            setCrewList(player, members)
+            return true
+        } catch (_: Exception) {return false}
     }
 
     // 소유권 공유 멤버 제거
-    fun removeMember(player: UUID, member: UUID) {
-        val members=getMembers(player)
-        if (!members.contains(member)) return
-        members.toMutableList().remove(member)
-        setMembers(player, members)
+    fun removeCrew(player: UUID, member: UUID): Boolean {
+        try {
+            val members=getCrewList(player)
+            if (!members.contains(member)) return false
+            members.toMutableList().remove(member)
+            setCrewList(player, members)
+            return true
+        } catch (_: Exception) {return false}
     }
 
     // 소유권 공유 멤버 목록 설정
-    fun setMembers(player: UUID, members: Set<UUID>) {
+    fun setCrewList(player: UUID, members: Set<UUID>) {
         if (members.size > MAX_MEMBER) error("too many members")
 
         val user = usersData[player.toString()]?.asJsonObject

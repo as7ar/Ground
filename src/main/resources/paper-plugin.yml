@@ -18,3 +18,5 @@ permissions:
         default: op
       astar.ground.purchase:
         default: op
+      astar.ground.admin:
+        default: op

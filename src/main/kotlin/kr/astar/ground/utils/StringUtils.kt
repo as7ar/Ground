@@ -199,7 +199,11 @@ fun String.toComponent(): Component = StringUtils.toComponent(this.replace("&", 
 fun String.translatable(vararg args: Any): Component {
     val componentArgs = args.map {
         when (it) {
-            is String -> it.toComponent()
+            is String -> {
+                try {
+                    it.toMiniMessage()
+                } catch (_: Exception) {it.toComponent()}
+            }
             is Component -> it
             else -> Component.text(it.toString())
         }
