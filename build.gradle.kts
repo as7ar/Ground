@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "kr.astar"
-version = "1.0-a1"
+version = "1.0-a10"
 
 repositories {
     mavenCentral()
@@ -55,5 +55,5 @@ tasks.shadowJar {
         include(dependency("net.wesjd:anvilgui:1.10.6-SNAPSHOT"))
     }
 
-    destinationDirectory=file("C:\\Users\\PC\\Desktop\\Test_Server\\21.8\\plugins")
+//    destinationDirectory=file("C:\\Users\\PC\\Desktop\\Test_Server\\21.8\\plugins")
 }

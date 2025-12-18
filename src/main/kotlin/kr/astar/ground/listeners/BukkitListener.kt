@@ -17,7 +17,7 @@ class BukkitListener: Listener {
     private val plugin = Ground.plugin
 
     @Deprecated("Function for TEST")
-    @EventHandler
+//    @EventHandler
     fun PlayerMoveEvent.테스트() {
         player.sendActionBar("${player.getRegion()}".toComponent())
     }
