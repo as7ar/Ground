@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 class GNDHandler {
+    private val plugin = Ground.plugin
     private val groundManager= Ground.groundManager
 
     fun handleList(sender: Player) {
@@ -100,7 +101,40 @@ class GNDHandler {
             groundManager.setItem("purchase-item", item)
             sender.sendMessage("content.setting.purchaseitem.success".translatable())
         } else {
+            if (value==null) {
+                sender.sendMessage("content.config.get".translatable(
+                    "&e${type.name}", "&a${when(type) {
+                        SettingType.GND_PREFIX-> plugin.config.getString("region.prefix")
+                        SettingType.MAX_OWNED_GROUND-> plugin.config.getInt("region.max-own")
+                        SettingType.MAX_GROUND-> plugin.config.getInt("region.max-members")
+                        else-> "N/A"
+                    }}"
+                ))
+                return
+            }
 
+            if (type == SettingType.GND_PREFIX) {
+                plugin.config.set("region.prefix", value)
+                plugin.saveConfig()
+                sender.sendMessage("content.command.set.suc".translatable(value))
+                return
+            }
+
+            val intValue= value.toIntOrNull()
+            if (intValue==null) {
+                sender.sendMessage("error.invalid.value".translatable(value))
+                return
+            }
+            plugin.config.set(
+                when (type) {
+                    SettingType.MAX_OWNED_GROUND -> "region.max-own"
+                    SettingType.MAX_GROUND -> "region.max-members"
+                    else -> return
+                },
+                intValue
+            )
+            plugin.saveConfig()
+            sender.sendMessage("content.command.set.suc".translatable(value))
         }
     }
 }

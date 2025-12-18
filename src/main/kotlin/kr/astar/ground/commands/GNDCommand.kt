@@ -14,8 +14,6 @@ class GNDCommand: ClassicCommand(
     "ground", listOf("땅", "gnd"),
     "Ground Plugin Default Command", "astar.ground.command"
 ) {
-    private val plugin = Ground.plugin
-
     override fun execute(
         sender: CommandSender,
         args: Array<out String>
