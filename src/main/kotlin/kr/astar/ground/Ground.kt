@@ -4,13 +4,11 @@ import kr.astar.ground.commands.GNDCommand
 import kr.astar.ground.listeners.BukkitListener
 import kr.astar.ground.listeners.EventListener
 import kr.astar.ground.manager.GroundManager
-import kr.astar.ground.utils.Debugger
 import kr.astar.ground.utils.Debugger.debug
 import kr.astar.ground.utils.GNDLogger
 import kr.astar.ground.utils.Utils.bannerGenerator
 import kr.astar.ground.utils.toMiniMessage
 import net.kyori.adventure.key.Key
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationStore
 import net.kyori.adventure.util.UTF8ResourceBundleControl
@@ -18,7 +16,6 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.InputStreamReader
-import java.text.MessageFormat
 import java.util.*
 
 class Ground : JavaPlugin() {

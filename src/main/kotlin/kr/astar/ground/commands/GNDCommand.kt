@@ -1,12 +1,9 @@
 package kr.astar.ground.commands
 
-import kr.astar.ground.Ground
 import kr.astar.ground.commands.handler.GNDHandler
 import kr.astar.ground.enums.CrewArgType
 import kr.astar.ground.enums.SettingType
-import kr.astar.ground.utils.toComponent
 import kr.astar.ground.utils.translatable
-import net.kyori.adventure.text.event.HoverEventSource
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -44,6 +41,15 @@ class GNDCommand: ClassicCommand(
             val c= args.getOrNull(2)
             if (b=="구매아이템") {
                 handler.handleSetting(sender, SettingType.PURCHASE_ITEM)
+            }
+            if (b=="땅접두사") {
+                handler.handleSetting(sender, SettingType.GND_PREFIX, c)
+            }
+            if (b=="최대보유땅") {
+                handler.handleSetting(sender, SettingType.MAX_GROUND, c)
+            }
+            if (b=="최대동거인원") {
+                handler.handleSetting(sender, SettingType.MAX_OWNED_GROUND, c)
             }
         }
         return true

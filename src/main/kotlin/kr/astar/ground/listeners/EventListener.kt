@@ -5,7 +5,6 @@ import com.sk89q.worldguard.WorldGuard
 import kr.astar.ground.events.PlayerChangeRegionEvent
 import kr.astar.ground.events.PlayerRegionEnterEvent
 import kr.astar.ground.events.PlayerRegionLeaveEvent
-import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent

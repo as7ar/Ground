@@ -4,12 +4,9 @@ import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
 import kr.astar.ground.events.PlayerRegionEnterEvent
 import kr.astar.ground.events.PlayerRegionLeaveEvent
-import kr.astar.ground.exception.GroundNotFound
-import kr.astar.ground.manager.GroundManager
 import kr.astar.ground.utils.Utils.getRegion
 import kr.astar.ground.utils.toComponent
 import kr.astar.ground.utils.translatable
-import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

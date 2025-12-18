@@ -1,6 +1,6 @@
 package kr.astar.ground.data
 
-import java.util.UUID
+import java.util.*
 
 data class UserData(
     val owned: Set<UUID>,
