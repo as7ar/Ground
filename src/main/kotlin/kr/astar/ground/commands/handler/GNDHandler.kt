@@ -103,7 +103,7 @@ class GNDHandler {
         } else {
             if (value==null) {
                 sender.sendMessage("content.config.get".translatable(
-                    "&e${type.name}", "&a${when(type) {
+                    "&e${type.description}", "&a${when(type) {
                         SettingType.GND_PREFIX-> plugin.config.getString("region.prefix")
                         SettingType.MAX_OWNED_GROUND-> plugin.config.getInt("region.max-own")
                         SettingType.MAX_GROUND-> plugin.config.getInt("region.max-members")
