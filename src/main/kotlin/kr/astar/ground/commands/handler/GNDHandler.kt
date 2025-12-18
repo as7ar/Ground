@@ -2,6 +2,7 @@ package kr.astar.ground.commands.handler
 
 import kr.astar.ground.Ground
 import kr.astar.ground.enums.CrewArgType
+import kr.astar.ground.enums.SettingType
 import kr.astar.ground.utils.translatable
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -86,6 +87,20 @@ class GNDHandler {
                 }
             }
             sender.sendMessage("content.crew.list.footer".translatable())
+        }
+    }
+
+    fun handleSetting(sender: Player, type: SettingType, value:String?=null) {
+        if (type== SettingType.PURCHASE_ITEM) {
+            val item = sender.inventory.itemInMainHand
+            if (item.isEmpty) {
+                sender.sendMessage("error.item.mainhand.required".translatable())
+                return
+            }
+            groundManager.setItem("purchase-item", item)
+            sender.sendMessage("content.setting.purchaseitem.success".translatable())
+        } else {
+
         }
     }
 }

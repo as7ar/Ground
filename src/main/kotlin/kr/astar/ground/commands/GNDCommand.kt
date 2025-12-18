@@ -3,6 +3,10 @@ package kr.astar.ground.commands
 import kr.astar.ground.Ground
 import kr.astar.ground.commands.handler.GNDHandler
 import kr.astar.ground.enums.CrewArgType
+import kr.astar.ground.enums.SettingType
+import kr.astar.ground.utils.toComponent
+import kr.astar.ground.utils.translatable
+import net.kyori.adventure.text.event.HoverEventSource
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -17,6 +21,10 @@ class GNDCommand: ClassicCommand(
         args: Array<out String>
     ): Boolean {
         if (sender !is Player) return true
+        if (!sender.hasPermission("astar.ground.command")) {
+            sender.sendMessage("error.no.permission".translatable())
+            return true
+        }
         val handler= GNDHandler()
         val a = args[0]
         if (a=="목록") handler.handleList(sender)
@@ -31,6 +39,13 @@ class GNDCommand: ClassicCommand(
                     handler.handleCrew(sender, CrewArgType.REMOVE, c)
                 }
                 "목록"-> handler.handleCrew(sender, CrewArgType.LIST)
+            }
+        }
+        if (a=="설정") {
+            val b= args[1]
+            val c= args.getOrNull(2)
+            if (b=="구매아이템") {
+                handler.handleSetting(sender, SettingType.PURCHASE_ITEM)
             }
         }
         return true
