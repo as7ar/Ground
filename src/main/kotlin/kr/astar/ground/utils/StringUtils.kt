@@ -7,6 +7,8 @@ import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.translation.GlobalTranslator
+import java.util.*
 
 object StringUtils {
     private val miniMessage = MiniMessage.miniMessage()
@@ -196,17 +198,13 @@ object StringUtils {
 fun Component.toLegacyString(): String = StringUtils.toLegacyString(this)
 fun String.toMiniMessage(): Component = StringUtils.toMiniMessage(this)
 fun String.toComponent(): Component = StringUtils.toComponent(this.replace("&", "§"))
-fun String.translatable(vararg args: Any): Component {
-    val componentArgs = args.map {
-        when (it) {
-            is String -> {
-                try {
-                    it.toMiniMessage()
-                } catch (_: Exception) {it.toComponent()}
-            }
-            is Component -> it
-            else -> Component.text(it.toString())
-        }
-    }.toTypedArray()
-    return Component.translatable(this, *componentArgs)
+fun String.translatable(vararg args: Component): Component {
+    val rendered = GlobalTranslator.render(
+        Component.translatable(
+            this,
+            *args
+        ),
+        Locale.KOREA
+    )
+    return rendered
 }

@@ -9,6 +9,7 @@ import kr.astar.ground.utils.GNDLogger
 import kr.astar.ground.utils.Utils.bannerGenerator
 import kr.astar.ground.utils.toMiniMessage
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.translation.GlobalTranslator
 import net.kyori.adventure.translation.TranslationStore
 import net.kyori.adventure.util.UTF8ResourceBundleControl
@@ -41,7 +42,7 @@ class Ground : JavaPlugin() {
 
         translateSet()
 
-//        logger.info(Component.translatable("test.key", Component.text("Ground")))
+        logger.info(Component.translatable("content.test", Component.text("Ground")))
 
         debug("Registering Events...")
         server.pluginManager.registerEvents(EventListener(), this)
@@ -52,14 +53,19 @@ class Ground : JavaPlugin() {
     }
 
     private fun translateSet() {
-        val store = TranslationStore.messageFormat(Key.key("ground:translations"))
+        val store = TranslationStore.messageFormat(Key.key("astar:ground"))
 
-        val bundle = ResourceBundle.getBundle("locale.Bundle",
-            Locale.KOREAN, UTF8ResourceBundleControl.get()
+        val locale = Locale.KOREA
+        val bundle = ResourceBundle.getBundle(
+            "locale.Bundle",
+            locale,
+            UTF8ResourceBundleControl.get()
         )
-        store.registerAll(Locale.KOREAN, bundle, true)
+
+        store.registerAll(locale, bundle, false)
         GlobalTranslator.translator().addSource(store)
     }
+
 
     private fun printLogo() {
         val art = listOf(

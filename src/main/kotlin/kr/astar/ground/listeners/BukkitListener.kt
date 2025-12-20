@@ -4,6 +4,7 @@ import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
 import kr.astar.ground.events.PlayerRegionEnterEvent
 import kr.astar.ground.events.PlayerRegionLeaveEvent
+import kr.astar.ground.exception.GroundNotFound
 import kr.astar.ground.utils.Utils.getRegion
 import kr.astar.ground.utils.toComponent
 import kr.astar.ground.utils.translatable
@@ -17,7 +18,7 @@ class BukkitListener: Listener {
     private val plugin = Ground.plugin
 
     @Deprecated("Function for TEST")
-//    @EventHandler
+    @EventHandler
     fun PlayerMoveEvent.테스트() {
         player.sendActionBar("${player.getRegion()}".toComponent())
     }
@@ -53,30 +54,35 @@ class BukkitListener: Listener {
             owner= player.uniqueId
         )
         groundManager.addGround(gndData)
+        player.inventory.itemInMainHand.amount-=1
         player.sendMessage("content.purchase.success".translatable(
-            "&a${regionId}"
+            "&a${regionId}".toComponent()
         ))
     }
 
     @EventHandler
     fun PlayerRegionEnterEvent.onEnter() {
-        val groundManager = Ground.groundManager
-        val ground = groundManager.getGround(region)
-        val welcomeMsg= groundManager.getWelcomeContent(ground.owner)
-        player.showTitle(Title.title("".toComponent(), "content.ground.join".translatable(
+        try {
+            val groundManager = Ground.groundManager
+            val ground = groundManager.getGround(region)
+            val welcomeMsg= groundManager.getWelcomeContent(ground.owner)
+            player.showTitle(Title.title("".toComponent(), "content.ground.join".translatable(
                 "${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
             ))
-        )
-        player.sendActionBar(welcomeMsg.toComponent())
+            )
+            player.sendActionBar(welcomeMsg.toComponent())
+        } catch (_: GroundNotFound) {}
     }
 
     @EventHandler
     fun PlayerRegionLeaveEvent.onLeave() {
-        val groundManager = Ground.groundManager
-        val ground = groundManager.getGround(region)
-        player.showTitle(Title.title("".toComponent(), "content.ground.leave".translatable(
+        try {
+            val groundManager = Ground.groundManager
+            val ground = groundManager.getGround(region)
+            player.showTitle(Title.title("".toComponent(), "content.ground.leave".translatable(
                 "${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
             ))
-        )
+            )
+        } catch (_: GroundNotFound) {}
     }
 }

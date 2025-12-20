@@ -3,7 +3,7 @@ package kr.astar.ground.commands
 import kr.astar.ground.commands.handler.GNDHandler
 import kr.astar.ground.enums.CrewArgType
 import kr.astar.ground.enums.SettingType
-import kr.astar.ground.utils.translatable
+import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -17,7 +17,7 @@ class GNDCommand: ClassicCommand(
     ): Boolean {
         if (sender !is Player) return true
         if (!sender.hasPermission("astar.ground.command")) {
-            sender.sendMessage("error.no.permission".translatable())
+            sender.sendMessage(Component.translatable("error.no.permission"))
             return true
         }
         val handler= GNDHandler()
@@ -58,22 +58,31 @@ class GNDCommand: ClassicCommand(
     override fun tabComplete(
         sender: CommandSender,
         args: Array<out String>
-    ): List<String?> {
-        val tab= mutableListOf<String>()
-        if (args.isEmpty()) {
-            tab.addAll(arrayOf("목록", "동거"))
-            if (sender.hasPermission("astar.ground.admin")) tab.addAll(arrayOf(
-                "설정"
-            ))
+    ): List<String> {
+        val tab = mutableListOf<String>()
+
+        when (args.size) {
+            1 -> {
+                tab.addAll(listOf("목록", "동거"))
+                if (sender.hasPermission("astar.ground.admin")) {
+                    tab.add("설정")
+                }
+            }
+
+            2 -> when (args[0]) {
+                "동거" -> tab.addAll(listOf("추가", "제거", "목록"))
+                "설정" -> tab.addAll(listOf("구매아이템", "땅접두사", "최대보유땅", "최대동거인원"))
+            }
+
+            3 -> when (args[0]) {
+                "동거" -> {
+                    if (args[1] == "추가" || args[1] == "제거") {
+                        tab.add("<플레이어>")
+                    }
+                }
+            }
         }
-        if (args.size==1) {
-            val a= args[0]
-            tab.addAll(when(a) {
-                "동거"-> arrayOf("추가", "제거", "목록")
-                "설정"-> arrayOf("구매아이템", "땅접두사", "최대보유땅", "최대동거인원")
-                else-> arrayOf("")
-            })
-        }
+
         return tab
     }
 }
