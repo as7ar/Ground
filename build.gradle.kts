@@ -22,6 +22,7 @@ dependencies {
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.1.0-SNAPSHOT") {
         exclude("com.google.code.gson", "gson")
     }
+//    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.1.0-SNAPSHOT")
     compileOnly("net.wesjd:anvilgui:1.10.6-SNAPSHOT")
 }
 

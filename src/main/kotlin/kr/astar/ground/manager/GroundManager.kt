@@ -3,15 +3,22 @@ package kr.astar.ground.manager
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.sk89q.worldedit.bukkit.BukkitAdapter
+import com.sk89q.worldedit.math.BlockVector3
+import com.sk89q.worldguard.WorldGuard
+import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion
 import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
 import kr.astar.ground.exception.GroundNotFound
+import kr.astar.ground.utils.Utils
 import kr.astar.ground.utils.Utils.addCrew
 import kr.astar.ground.utils.Utils.decodeItem
 import kr.astar.ground.utils.Utils.encodeItem
 import kr.astar.ground.utils.Utils.removeCrew
 import org.bukkit.Bukkit
+import org.bukkit.World
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.io.File
 import java.util.*
@@ -39,6 +46,39 @@ class GroundManager {
     val MAX_MEMBER = plugin.config.getInt("region.max-members")
 
     init { load() }
+
+    object generator {
+        private val wg = WorldGuard.getInstance()
+        private val container = wg.platform.regionContainer
+
+        /**
+        * @param pos1 first position of region
+         * @param pos2 second position of region
+         *
+         * @return the id of region
+        *
+        * */
+        fun create(world: World, pos1: BlockVector3, pos2: BlockVector3): String? {
+            val world = BukkitAdapter.adapt(world)
+            val regionManager = container[world] ?: return null
+            val region = ProtectedCuboidRegion("GND-0", pos1, pos2)
+
+            regionManager.addRegion(region)
+            regionManager.save()
+            return ""
+        }
+
+        fun remove(player: Player, id: String) {
+            val ground = Ground.groundManager.getGround(id)
+            val world = Bukkit.getWorld(ground.world) ?: return
+            val bukkitworld = BukkitAdapter.adapt(world)
+            val regionManager = container[bukkitworld] ?: return
+            val region= Utils.getRegionById(world, id) ?: return
+            region.members.clear()
+            region.owners.clear()
+            regionManager.save()
+        }
+    }
 
     // 땅 등록
     fun addGround(gnddata: GNData) {

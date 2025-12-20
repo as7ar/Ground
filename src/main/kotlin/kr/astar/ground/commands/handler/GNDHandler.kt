@@ -3,9 +3,12 @@ package kr.astar.ground.commands.handler
 import kr.astar.ground.Ground
 import kr.astar.ground.enums.CrewArgType
 import kr.astar.ground.enums.SettingType
+import kr.astar.ground.exception.GroundNotFound
+import kr.astar.ground.manager.GroundManager
+import kr.astar.ground.utils.Utils
+import kr.astar.ground.utils.sendMessage
 import kr.astar.ground.utils.toComponent
 import kr.astar.ground.utils.translatable
-import kr.astar.ground.utils.sendMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -97,6 +100,7 @@ class GNDHandler {
             return
         }
 
+
         if (value == null) {
             val current = when (type) {
                 SettingType.GND_PREFIX ->
@@ -114,6 +118,16 @@ class GNDHandler {
                     current.toString().toComponent()
                 ), true
             )
+            return
+        }
+
+        if (type== SettingType.REMOVE_GROUND) {
+            try {
+                GroundManager.generator.remove(sender, value)
+                sender.sendMessage("content.ground.remove.suc".translatable("&e${value}".toComponent()), true)
+            } catch (_: GroundNotFound) {
+                sender.sendMessage("error.invalid.ground".translatable(value.toComponent()), true)
+            }
             return
         }
 

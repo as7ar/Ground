@@ -51,6 +51,9 @@ class GNDCommand: ClassicCommand(
             if (b=="최대동거인원") {
                 handler.handleSetting(sender, SettingType.MAX_OWNED_GROUND, c)
             }
+            if (b=="땅제거") {
+                handler.handleSetting(sender, SettingType.REMOVE_GROUND, c)
+            }
         }
         return true
     }
@@ -71,7 +74,7 @@ class GNDCommand: ClassicCommand(
 
             2 -> when (args[0]) {
                 "동거" -> tab.addAll(listOf("추가", "제거", "목록"))
-                "설정" -> tab.addAll(listOf("구매아이템", "땅접두사", "최대보유땅", "최대동거인원"))
+                "설정" -> tab.addAll(listOf("구매아이템", "땅접두사", "최대보유땅", "최대동거인원", "땅제거"))
             }
 
             3 -> when (args[0]) {
