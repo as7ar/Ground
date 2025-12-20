@@ -1,10 +1,12 @@
 package kr.astar.ground.listeners
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter
 import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
 import kr.astar.ground.events.PlayerRegionEnterEvent
 import kr.astar.ground.events.PlayerRegionLeaveEvent
 import kr.astar.ground.exception.GroundNotFound
+import kr.astar.ground.utils.Utils.getProtectedRegion
 import kr.astar.ground.utils.Utils.getRegion
 import kr.astar.ground.utils.sendMessage
 import kr.astar.ground.utils.toComponent
@@ -33,7 +35,9 @@ class BukkitListener: Listener {
         val purchaseItem= groundManager.getItem("purchase-item")
         if (!player.inventory.itemInMainHand.isSimilar(purchaseItem)) return
 
-        val regionId=player.getRegion() ?: run {
+        val regionId=player.getRegion()
+
+        if (regionId=="") {
             player.sendMessage("error.not.regions".translatable(), true)
             return
         }
@@ -57,6 +61,9 @@ class BukkitListener: Listener {
             owner= player.uniqueId
         )
         groundManager.addGround(gndData)
+
+        player.getProtectedRegion()?.owners?.addPlayer(player.uniqueId)
+
         player.inventory.itemInMainHand.amount-=1
         player.sendMessage("content.purchase.success".translatable(
             "&a${regionId}".toComponent()

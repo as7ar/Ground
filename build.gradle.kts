@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "kr.astar"
-version = "1.0-a10"
+version = "1.0-a11"
 
 repositories {
     mavenCentral()

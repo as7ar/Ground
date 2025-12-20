@@ -6,8 +6,11 @@ import com.google.gson.JsonObject
 import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
 import kr.astar.ground.exception.GroundNotFound
+import kr.astar.ground.utils.Utils.addCrew
 import kr.astar.ground.utils.Utils.decodeItem
 import kr.astar.ground.utils.Utils.encodeItem
+import kr.astar.ground.utils.Utils.removeCrew
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
 import java.io.File
@@ -112,30 +115,36 @@ class GroundManager {
     }
 
     // 소유권 공유 멤버 목록
-    fun getCrewList(player: UUID): Set<UUID> {
-        val user = usersData[player.toString()]?.asJsonObject ?: return emptySet()
+    fun getCrewList(uuid: UUID): Set<UUID> {
+        val user = usersData[uuid.toString()]?.asJsonObject ?: return emptySet()
         val arr = user["members"]?.asJsonArray ?: return emptySet()
         return arr.map { UUID.fromString(it.asString) }.toSet()
     }
 
     // 소유권 공유 멤버 추가
-    fun addCrew(player: UUID, member: UUID): Boolean {
+    fun addCrew(uuid: UUID, member: UUID): Boolean {
         try {
-            val members=getCrewList(player)
+            val members=getCrewList(uuid)
             if (members.contains(member)) return false
             members.toMutableList().add(member)
-            setCrewList(player, members)
+            setCrewList(uuid, members)
+
+            val player = Bukkit.getOfflinePlayer(uuid)
+            player.addCrew(Bukkit.getOfflinePlayer(member))
             return true
         } catch (_: Exception) {return false}
     }
 
     // 소유권 공유 멤버 제거
-    fun removeCrew(player: UUID, member: UUID): Boolean {
+    fun removeCrew(uuid: UUID, member: UUID): Boolean {
         try {
-            val members=getCrewList(player)
+            val members=getCrewList(uuid)
             if (!members.contains(member)) return false
             members.toMutableList().remove(member)
-            setCrewList(player, members)
+            setCrewList(uuid, members)
+
+            val player = Bukkit.getOfflinePlayer(uuid)
+            player.removeCrew(Bukkit.getOfflinePlayer(member))
             return true
         } catch (_: Exception) {return false}
     }

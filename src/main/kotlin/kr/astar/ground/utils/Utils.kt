@@ -2,9 +2,14 @@ package kr.astar.ground.utils
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldguard.WorldGuard
+import com.sk89q.worldguard.protection.regions.ProtectedRegion
+import kr.astar.ground.Ground
 import kr.astar.ground.utils.Utils.prefix
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
+import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.io.BukkitObjectInputStream
@@ -15,6 +20,7 @@ import java.util.*
 
 object Utils {
     const val prefix= "<gradient:#B8DB80:#C9B59C> GROUND | </gradient>"
+    private val groundManager= Ground.groundManager
 
     fun bannerGenerator(
         artLines: List<String>,
@@ -49,14 +55,43 @@ object Utils {
 
     private val wg = WorldGuard.getInstance()
     private val container = wg.platform.regionContainer
-    fun Player.getRegion(): String? {
+    fun Player.getRegion(): String {
+        val region= this.getProtectedRegion() ?: return ""
+        val currentRegion= region.id
+        return currentRegion
+    }
+
+    fun Player.getProtectedRegion(): ProtectedRegion? {
         val world= BukkitAdapter.adapt(world)
         val regionManager= container[world] ?: return null
         val blockVector= BukkitAdapter.asBlockVector(location)
         val regions= regionManager.getApplicableRegions(blockVector)
-        val currentRegion= regions.regions.maxByOrNull { it.priority }?.id
-        if (currentRegion!=null) return currentRegion
-        return ""
+        val region= regions.regions.maxByOrNull { it.priority }
+        return region
+    }
+
+    fun getRegionById(world: World, regionId: String): ProtectedRegion? {
+        val wgWorld = BukkitAdapter.adapt(world)
+        val regionManager = container[wgWorld] ?: return null
+        return regionManager.getRegion(regionId)
+    }
+
+    fun OfflinePlayer.addCrew(crew: OfflinePlayer) {
+        groundManager.getOwned(this.uniqueId).forEach {
+            val gnd=groundManager.getGround(it)
+            val world= Bukkit.getWorld(gnd.world) ?: return@forEach
+            val region= getRegionById(world, gnd.id) ?: return@forEach
+            region.members.addPlayer(crew.uniqueId)
+        }
+    }
+
+    fun OfflinePlayer.removeCrew(crew: OfflinePlayer) {
+        groundManager.getOwned(this.uniqueId).forEach {
+            val gnd=groundManager.getGround(it)
+            val world= Bukkit.getWorld(gnd.world) ?: return@forEach
+            val region= getRegionById(world, gnd.id) ?: return@forEach
+            region.members.removePlayer(crew.uniqueId)
+        }
     }
 
     fun encodeItem(item: ItemStack): String {
