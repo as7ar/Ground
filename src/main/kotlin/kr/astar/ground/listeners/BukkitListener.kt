@@ -70,7 +70,7 @@ class BukkitListener: Listener {
             val ground = groundManager.getGround(region)
             val welcomeMsg= groundManager.getWelcomeContent(ground.owner)
             player.showTitle(Title.title("".toComponent(), "content.ground.join".translatable(
-                "${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
+                "&a${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
             ))
             )
             player.sendActionBar(welcomeMsg.toComponent())
@@ -83,7 +83,7 @@ class BukkitListener: Listener {
             val groundManager = Ground.groundManager
             val ground = groundManager.getGround(region)
             player.showTitle(Title.title("".toComponent(), "content.ground.leave".translatable(
-                "${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
+                "&a${plugin.server.getOfflinePlayer(ground.owner).name}".toComponent()
             ))
             )
         } catch (_: GroundNotFound) {}

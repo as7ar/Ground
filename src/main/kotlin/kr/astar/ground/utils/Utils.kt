@@ -14,7 +14,7 @@ import java.io.ByteArrayOutputStream
 import java.util.*
 
 object Utils {
-    const val prefix= "<gradient:#B8DB80:#C9B59C> GROUND </gradient>"
+    const val prefix= "<gradient:#B8DB80:#C9B59C> GROUND | </gradient>"
 
     fun bannerGenerator(
         artLines: List<String>,
