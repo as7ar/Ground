@@ -5,6 +5,7 @@ import kr.astar.ground.enums.CrewArgType
 import kr.astar.ground.enums.SettingType
 import kr.astar.ground.utils.toComponent
 import kr.astar.ground.utils.translatable
+import kr.astar.ground.utils.sendMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -14,7 +15,7 @@ class GNDHandler {
     private val groundManager = Ground.groundManager
 
     fun handleList(sender: Player) {
-        sender.sendMessage("content.ground.list.header".translatable())
+        sender.sendMessage("content.ground.list.header".translatable(), true)
 
         if (sender.hasPermission("astar.ground.admin")) {
             groundManager.getGroundList().forEach { gnd ->
@@ -22,7 +23,7 @@ class GNDHandler {
                         "&a${gnd.id}".toComponent(),
                         "&e${Bukkit.getOfflinePlayer(gnd.owner).name}".toComponent(),
                         "&b${Bukkit.getWorld(gnd.world)?.name}".toComponent()
-                ))
+                ), true)
             }
         } else {
             groundManager.getOwned(sender.uniqueId).forEach { id ->
@@ -30,11 +31,11 @@ class GNDHandler {
                 sender.sendMessage("content.ground.list.item.user".translatable(
                     "&a${gnd.id}".toComponent(),
                     "&e${Bukkit.getWorld(gnd.world)?.name}".toComponent()
-                ))
+                ), true)
             }
         }
 
-        sender.sendMessage("content.ground.list.footer".translatable())
+        sender.sendMessage("content.ground.list.footer".translatable(), true)
     }
 
     fun handleCrew(sender: Player, type: CrewArgType, targetName: String? = null) {
@@ -45,18 +46,19 @@ class GNDHandler {
                 "content.crew.list.header".translatable(
                     crews.size.toString().toComponent(),
                     groundManager.MAX_MEMBER.toString().toComponent()
-                )
+                ), true
             )
 
             if (crews.isEmpty()) {
-                sender.sendMessage("content.crew.list.empty".translatable())
+                sender.sendMessage("content.crew.list.empty".translatable(), true)
             } else {
                 crews.forEach { uuid -> sender.sendMessage(
-                    "content.crew.list".translatable(uuid.toString().toComponent())
+                    "content.crew.list".translatable(uuid.toString().toComponent()),
+                    true
                 ) }
             }
 
-            sender.sendMessage("content.crew.list.footer".translatable())
+            sender.sendMessage("content.crew.list.footer".translatable(), true)
             return
         }
 
@@ -64,7 +66,7 @@ class GNDHandler {
         if (target == null) {
             sender.sendMessage("error.invalid.player".translatable(
                 (targetName ?: "null").toComponent()
-            ))
+            ), true)
             return
         }
 
@@ -78,7 +80,7 @@ class GNDHandler {
 
         sender.sendMessage(
             "content.crew.${type.name.lowercase()}.${if (success) "success" else "fail"}"
-                .translatable(target.name.toComponent())
+                .translatable(target.name.toComponent()), true
         )
     }
 
@@ -86,12 +88,12 @@ class GNDHandler {
         if (type == SettingType.PURCHASE_ITEM) {
             val item = sender.inventory.itemInMainHand
             if (item.isEmpty) {
-                sender.sendMessage("error.item.mainhand.required".translatable())
+                sender.sendMessage("error.item.mainhand.required".translatable(), true)
                 return
             }
 
             groundManager.setItem("purchase-item", item)
-            sender.sendMessage("content.setting.purchaseitem.success".translatable())
+            sender.sendMessage("content.setting.purchaseitem.success".translatable(), true)
             return
         }
 
@@ -110,7 +112,7 @@ class GNDHandler {
                 "content.config.get".translatable(
                     type.description.toComponent(),
                     current.toString().toComponent()
-                )
+                ), true
             )
             return
         }
@@ -122,14 +124,14 @@ class GNDHandler {
             sender.sendMessage(
                 "content.command.set.suc".translatable(
                     value.toComponent()
-                )
+                ), true
             )
             return
         }
 
         val intValue = value.toIntOrNull()
         if (intValue == null) {
-            sender.sendMessage("error.invalid.value".translatable(value.toComponent()))
+            sender.sendMessage("error.invalid.value".translatable(value.toComponent()), true)
             return
         }
 
@@ -144,6 +146,6 @@ class GNDHandler {
 
         plugin.saveConfig()
 
-        sender.sendMessage("content.command.set.suc".translatable(value.toComponent()))
+        sender.sendMessage("content.command.set.suc".translatable(value.toComponent()), true)
     }
 }

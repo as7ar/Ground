@@ -2,6 +2,9 @@ package kr.astar.ground.utils
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldguard.WorldGuard
+import kr.astar.ground.utils.Utils.prefix
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.io.BukkitObjectInputStream
@@ -67,4 +70,9 @@ object Utils {
         val input = ByteArrayInputStream(Base64.getDecoder().decode(base64))
         return BukkitObjectInputStream(input).use { it.readObject() as ItemStack }
     }
+}
+
+fun Player.sendMessage(component: Component, bool: Boolean=true) {
+    if (bool) this.sendMessage(MiniMessage.miniMessage().deserialize(prefix).append(component))
+    else this.sendMessage(component)
 }

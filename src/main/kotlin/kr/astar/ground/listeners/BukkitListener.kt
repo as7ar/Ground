@@ -6,6 +6,7 @@ import kr.astar.ground.events.PlayerRegionEnterEvent
 import kr.astar.ground.events.PlayerRegionLeaveEvent
 import kr.astar.ground.exception.GroundNotFound
 import kr.astar.ground.utils.Utils.getRegion
+import kr.astar.ground.utils.sendMessage
 import kr.astar.ground.utils.toComponent
 import kr.astar.ground.utils.translatable
 import net.kyori.adventure.title.Title
@@ -18,7 +19,7 @@ class BukkitListener: Listener {
     private val plugin = Ground.plugin
 
     @Deprecated("Function for TEST")
-    @EventHandler
+//    @EventHandler
     fun PlayerMoveEvent.테스트() {
         player.sendActionBar("${player.getRegion()}".toComponent())
     }
@@ -33,18 +34,20 @@ class BukkitListener: Listener {
         if (!player.inventory.itemInMainHand.isSimilar(purchaseItem)) return
 
         val regionId=player.getRegion() ?: run {
-            player.sendMessage("error.not.regions".translatable())
+            player.sendMessage("error.not.regions".translatable(), true)
             return
         }
 
         if (!regionId.startsWith(groundManager.gndPrefix, true)) return
+
+        isCancelled = true
 
         val existing = runCatching {
             groundManager.getGround(regionId)
         }.getOrNull()
 
         if (existing != null && existing.world == player.world.uid) {
-            player.sendMessage("content.owner.exist".translatable())
+            player.sendMessage("content.owner.exist".translatable(), true)
             return
         }
 
@@ -57,7 +60,7 @@ class BukkitListener: Listener {
         player.inventory.itemInMainHand.amount-=1
         player.sendMessage("content.purchase.success".translatable(
             "&a${regionId}".toComponent()
-        ))
+        ), true)
     }
 
     @EventHandler
