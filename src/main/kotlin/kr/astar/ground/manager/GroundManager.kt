@@ -9,6 +9,7 @@ import com.sk89q.worldguard.WorldGuard
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion
 import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
+import kr.astar.ground.exception.GroundMaximum
 import kr.astar.ground.exception.GroundNotFound
 import kr.astar.ground.utils.Utils
 import kr.astar.ground.utils.Utils.addCrew
@@ -164,6 +165,8 @@ class GroundManager {
     // 소유권 공유 멤버 추가
     fun addCrew(uuid: UUID, member: UUID): Boolean {
         try {
+            if (getOwned(member).size>=MAX_OWN) throw GroundMaximum()
+
             val members=getCrewList(uuid)
             if (members.contains(member)) return false
             members.toMutableList().add(member)

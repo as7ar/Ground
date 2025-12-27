@@ -3,12 +3,15 @@ package kr.astar.ground.commands.handler
 import kr.astar.ground.Ground
 import kr.astar.ground.enums.CrewArgType
 import kr.astar.ground.enums.SettingType
+import kr.astar.ground.exception.GroundMaximum
 import kr.astar.ground.exception.GroundNotFound
 import kr.astar.ground.manager.GroundManager
 import kr.astar.ground.utils.Utils
 import kr.astar.ground.utils.sendMessage
 import kr.astar.ground.utils.toComponent
+import kr.astar.ground.utils.toMiniMessage
 import kr.astar.ground.utils.translatable
+import net.kyori.adventure.text.event.ClickEvent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -74,8 +77,27 @@ class GNDHandler {
         }
 
         val success = when (type) {
-            CrewArgType.ADD ->
-                groundManager.addCrew(sender.uniqueId, target.uniqueId)
+            CrewArgType.ADD -> {
+                try {
+                    groundManager.addCrew(sender.uniqueId, target.uniqueId)
+                } catch (m: GroundMaximum) {
+                    sender.sendMessage("content.crew.maximum.ground.1".translatable(), true)
+                    sender.sendMessage("content.crew.maximum.ground.2".translatable(), true)
+                    sender.sendMessage("content.crew.maximum.ground.3".translatable(
+                        *groundManager.getOwned(target.uniqueId).map {
+                            "땅 $it 제거".toComponent().clickEvent(ClickEvent.callback {  p->
+                                groundManager.removeGround(it)
+                                p.sendMessage("content.ground.remove.suc".translatable("&a${it}&f".toComponent()))
+                                groundManager.addCrew(sender.uniqueId, target.uniqueId)
+                            })
+                        }.toTypedArray(),
+                        "동거 포기하기".toComponent().clickEvent(ClickEvent.callback {
+                            sender.sendMessage("content.crew.maximum.ground.giveup".translatable(), true)
+                        })
+                    ), true)
+                    false
+                }
+            }
             CrewArgType.REMOVE ->
                 groundManager.removeCrew(sender.uniqueId, target.uniqueId)
             else -> false
