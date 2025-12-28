@@ -146,6 +146,7 @@ class GNDHandler {
         if (type== SettingType.REMOVE_GROUND) {
             try {
                 GroundManager.generator.remove(sender, value)
+                groundManager.removeGround(value)
                 sender.sendMessage("content.ground.remove.suc".translatable("&e${value}".toComponent()), true)
             } catch (_: GroundNotFound) {
                 sender.sendMessage("error.invalid.ground".translatable(value.toComponent()), true)
