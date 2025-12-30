@@ -18,6 +18,10 @@ jobs:
           distribution: temurin
           java-version: '21'
 
+      # 👇 이거 추가
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper --gradle-version 8.8
+
       - name: Cache Gradle
         uses: actions/cache@v4
         with:
@@ -27,8 +31,6 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
-
-
 
       - name: Verify Java version
         run: java -version
