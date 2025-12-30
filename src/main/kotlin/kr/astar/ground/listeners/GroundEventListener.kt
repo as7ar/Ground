@@ -5,8 +5,8 @@ import io.papermc.paper.event.player.PlayerItemFrameChangeEvent
 import io.papermc.paper.event.player.PlayerPickItemEvent
 import io.papermc.paper.event.player.PlayerPurchaseEvent
 import kr.astar.ground.Ground
+import kr.astar.ground.utils.Utils.getRegion
 import org.bukkit.entity.Player
-import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.*
@@ -26,55 +26,62 @@ class GroundEventListener : Listener {
         }
     }
 
-    private fun cancelIfNoAccess(event: Event, player: Player) {
-        if (!hasAccess(player)) {
-            when (event) {
-                is Cancellable -> event.isCancelled = true
-            }
-        }
+    private fun cancel(player: Player): Boolean {
+        return !hasAccess(player)
     }
 
     @EventHandler
-    fun onInteract(e: PlayerInteractEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerInteractEvent.onInteraction() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onDrop(e: PlayerDropItemEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerDropItemEvent.onDrop() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onPickup(e: PlayerPickItemEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerPickItemEvent.onPickup() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onBed(e: PlayerBedEnterEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerBedEnterEvent.onEnter() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onBucketFill(e: PlayerBucketFillEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerBucketFillEvent.onFill() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onBucketEmpty(e: PlayerBucketEmptyEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerBucketEmptyEvent.onEmpty() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onItemFrame(e: PlayerItemFrameChangeEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerItemFrameChangeEvent.onChange() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onBeacon(e: PlayerChangeBeaconEffectEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerChangeBeaconEffectEvent.onChange() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onArmorStand(e: PlayerArmorStandManipulateEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerArmorStandManipulateEvent.onManipulate() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onPortal(e: PlayerPortalEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerPortalEvent.onPortal() {
+        isCancelled = cancel(player)
+    }
 
     @EventHandler
-    fun onPurchase(e: PlayerPurchaseEvent) =
-        cancelIfNoAccess(e, e.player)
+    fun PlayerPurchaseEvent.onPurchase() {
+        isCancelled = cancel(player)
+    }
 }
