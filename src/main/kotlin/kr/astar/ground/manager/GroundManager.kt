@@ -43,7 +43,7 @@ class GroundManager {
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
     val gndPrefix = plugin.config.getString("region.prefix") ?: "GND"
-    val MAX_OWN = plugin.config.getInt("region.max-own")
+    val MAX_OWNED = plugin.config.getInt("region.max-own")
     val MAX_MEMBER = plugin.config.getInt("region.max-members")
 
     init { load() }
@@ -71,6 +71,7 @@ class GroundManager {
 
         fun remove(player: Player, id: String) {
             val ground = Ground.groundManager.getGround(id)
+            Ground.groundManager.removeGround(id)
             val world = Bukkit.getWorld(ground.world) ?: return
             val bukkitworld = BukkitAdapter.adapt(world)
             val regionManager = container[bukkitworld] ?: return
@@ -90,7 +91,7 @@ class GroundManager {
 
         val owned = user["owned"]?.asJsonArray ?: JsonArray()
 
-        if (owned.size() >= MAX_OWN) error("too many grounds")
+        if (owned.size() >= MAX_OWNED) error("too many grounds")
 
         val groundJson = JsonObject().apply {
             addProperty("world", gnddata.world.toString())
@@ -126,6 +127,12 @@ class GroundManager {
                 owner = UUID.fromString(obj["owner"].asString)
             )
         }
+    }
+
+    fun getOwner(regionId: String): UUID {
+        val ground = groundData[regionId]?.asJsonObject
+            ?: throw GroundNotFound(regionId)
+        return UUID.fromString(ground["owner"].asString)
     }
 
     // 땅 정보 제거
@@ -165,7 +172,7 @@ class GroundManager {
     // 소유권 공유 멤버 추가
     fun addCrew(uuid: UUID, member: UUID): Boolean {
         try {
-            if (getOwned(member).size>=MAX_OWN) throw GroundMaximum()
+            if (getOwned(member).size>=MAX_OWNED) throw GroundMaximum()
 
             val members=getCrewList(uuid)
             if (members.contains(member)) return false
@@ -174,6 +181,7 @@ class GroundManager {
 
             val player = Bukkit.getOfflinePlayer(uuid)
             player.addCrew(Bukkit.getOfflinePlayer(member))
+            addCrew(member, uuid)
             return true
         } catch (_: Exception) {return false}
     }
@@ -188,13 +196,14 @@ class GroundManager {
 
             val player = Bukkit.getOfflinePlayer(uuid)
             player.removeCrew(Bukkit.getOfflinePlayer(member))
+            removeCrew(member, uuid)
             return true
         } catch (_: Exception) {return false}
     }
 
     // 소유권 공유 멤버 목록 설정
     fun setCrewList(player: UUID, members: Set<UUID>) {
-        if (members.size > MAX_MEMBER) error("too many members")
+        if (members.size >= MAX_MEMBER) error("too many members")
 
         val user = usersData[player.toString()]?.asJsonObject
             ?: JsonObject().also { usersData.add(player.toString(), it) }

@@ -3,6 +3,7 @@ package kr.astar.ground
 import kr.astar.ground.commands.GNDCommand
 import kr.astar.ground.listeners.BukkitListener
 import kr.astar.ground.listeners.EventListener
+import kr.astar.ground.listeners.GroundEventListener
 import kr.astar.ground.manager.GroundManager
 import kr.astar.ground.utils.Debugger.debug
 import kr.astar.ground.utils.GNDLogger
@@ -47,6 +48,7 @@ class Ground : JavaPlugin() {
         debug("Registering Events...")
         server.pluginManager.registerEvents(EventListener(), this)
         server.pluginManager.registerEvents(BukkitListener(), this)
+        server.pluginManager.registerEvents(GroundEventListener(), this)
 
         debug("Loading Commands...")
         GNDCommand().register()

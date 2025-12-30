@@ -1,6 +1,5 @@
 package kr.astar.ground.listeners
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter
 import kr.astar.ground.Ground
 import kr.astar.ground.data.GNData
 import kr.astar.ground.events.PlayerRegionEnterEvent
@@ -23,7 +22,7 @@ class BukkitListener: Listener {
     @Deprecated("Function for TEST")
 //    @EventHandler
     fun PlayerMoveEvent.테스트() {
-        player.sendActionBar("${player.getRegion()}".toComponent())
+        player.sendActionBar(player.getRegion().toComponent())
     }
 
     @EventHandler
@@ -52,6 +51,14 @@ class BukkitListener: Listener {
 
         if (existing != null && existing.world == player.world.uid) {
             player.sendMessage("content.owner.exist".translatable(), true)
+            return
+        }
+
+        val owned= groundManager.getOwned(player.uniqueId)
+        if (owned.size>= groundManager.MAX_OWNED) {
+            player.sendMessage("content.crew.maximum.ground.3".translatable(
+                "&c${groundManager.MAX_OWNED}".toComponent(), "&a${owned.size}".toComponent()
+            ), true)
             return
         }
 

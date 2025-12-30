@@ -70,6 +70,16 @@ object Utils {
         return region
     }
 
+    fun Player.isInside(region: ProtectedRegion): Boolean {
+        val loc= this.location
+        val min = region.minimumPoint
+        val max = region.maximumPoint
+
+        return loc.blockX in min.x()..max.x() &&
+                loc.blockY in min.y()..max.y() &&
+                loc.blockZ in min.z()..max.z()
+    }
+
     fun getRegionById(world: World, regionId: String): ProtectedRegion? {
         val wgWorld = BukkitAdapter.adapt(world)
         val regionManager = container[wgWorld] ?: return null
