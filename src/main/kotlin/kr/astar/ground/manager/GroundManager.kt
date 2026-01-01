@@ -178,36 +178,43 @@ class GroundManager {
 
     // 소유권 공유 멤버 추가
     fun addCrew(uuid: UUID, member: UUID): Boolean {
-        load()
-        try {
-            if (getOwned(member).size>=MAX_OWNED) throw GroundMaximum()
+        if (getOwned(member).size >= MAX_OWNED) return false
 
-            val members=getCrewList(uuid).toMutableList()
-            if (members.contains(member)) return false
+        fun internalAdd(uuid: UUID, member: UUID, mirror: Boolean): Boolean {
+            val members = getCrewList(uuid).toMutableList()
+            if (member in members) return false
             members.add(member)
             setCrewList(uuid, members.toSet())
-
             val player = Bukkit.getOfflinePlayer(uuid)
             player.addCrew(Bukkit.getOfflinePlayer(member))
-            addCrew(member, uuid)
+            if (mirror) {
+                internalAdd(member, uuid, false)
+            }
             return true
-        } catch (_: Exception) {return false}
+        }
+
+        load()
+        return internalAdd(uuid, member, true)
     }
 
     // 소유권 공유 멤버 제거
     fun removeCrew(uuid: UUID, member: UUID): Boolean {
+        fun internalRemove(uuid: UUID, member: UUID, mirror: Boolean): Boolean {
+            try {
+                val members=getCrewList(uuid).toMutableList()
+                if (!members.contains(member)) return false
+                members.remove(member)
+                setCrewList(uuid, members.toSet())
+                val player = Bukkit.getOfflinePlayer(uuid)
+                player.removeCrew(Bukkit.getOfflinePlayer(member))
+                if (mirror) {
+                    internalRemove(member, uuid, false)
+                }
+                return true
+            } catch (_: Exception) { return false }
+        }
         load()
-        try {
-            val members=getCrewList(uuid).toMutableList()
-            if (!members.contains(member)) return false
-            members.remove(member)
-            setCrewList(uuid, members.toSet())
-
-            val player = Bukkit.getOfflinePlayer(uuid)
-            player.removeCrew(Bukkit.getOfflinePlayer(member))
-            removeCrew(member, uuid)
-            return true
-        } catch (_: Exception) { return false }
+        return internalRemove(uuid, member, true)
     }
 
     // 소유권 공유 멤버 목록 설정

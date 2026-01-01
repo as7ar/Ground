@@ -48,27 +48,27 @@ class GroundEventListener : Listener {
 
     @EventHandler
     fun PlayerBedEnterEvent.onEnter() {
-        isCancelled = cancel(player)
+        isCancelled = !hasAccess(player, bed.location)
     }
 
     @EventHandler
     fun PlayerBucketFillEvent.onFill() {
-        isCancelled = cancel(player)
+        isCancelled = !hasAccess(player, this.blockClicked.location)
     }
 
     @EventHandler
     fun PlayerBucketEmptyEvent.onEmpty() {
-        isCancelled = cancel(player)
+        isCancelled = !hasAccess(player, this.blockClicked.location)
     }
 
     @EventHandler
     fun PlayerItemFrameChangeEvent.onChange() {
-        isCancelled = cancel(player)
+        isCancelled = !hasAccess(player, this.itemFrame.location)
     }
 
     @EventHandler
     fun PlayerChangeBeaconEffectEvent.onChange() {
-        isCancelled = cancel(player)
+        isCancelled = !hasAccess(player, this.beacon.location)
     }
 
     @EventHandler
