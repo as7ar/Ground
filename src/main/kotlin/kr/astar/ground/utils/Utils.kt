@@ -8,6 +8,7 @@ import kr.astar.ground.utils.Utils.prefix
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.OfflinePlayer
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -62,9 +63,17 @@ object Utils {
     }
 
     fun Player.getProtectedRegion(): ProtectedRegion? {
+        return this.location.getProtectedRegion()
+    }
+
+    fun Location.getRegion(): String {
+        return this.getProtectedRegion()?.id ?: ""
+    }
+
+    fun Location.getProtectedRegion():  ProtectedRegion? {
         val world= BukkitAdapter.adapt(world)
         val regionManager= container[world] ?: return null
-        val blockVector= BukkitAdapter.asBlockVector(location)
+        val blockVector= BukkitAdapter.asBlockVector(this)
         val regions= regionManager.getApplicableRegions(blockVector)
         val region= regions.regions.maxByOrNull { it.priority }
         return region

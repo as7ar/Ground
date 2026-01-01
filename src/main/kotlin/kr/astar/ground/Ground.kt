@@ -54,7 +54,7 @@ class Ground : JavaPlugin() {
         GNDCommand().register()
     }
 
-    private fun translateSet() {
+    fun translateSet() {
         val store = TranslationStore.messageFormat(Key.key("astar:ground"))
 
         val locale = Locale.KOREA

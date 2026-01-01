@@ -66,14 +66,18 @@ class GNDHandler {
             return
         }
 
-        val target = targetName?.let { Bukkit.getPlayer(it) }
-        if (target == null) {
+        val target = targetName?.let { Bukkit.getOfflinePlayer(it) }
+        if (target==null) {
+            sender.sendMessage("error.player.not.exist".translatable(), true)
+            return
+        }
+        /*if (target.player == null) {
             sender.sendMessage("error.invalid.player".translatable(
-                (targetName ?: "null").toComponent()
+                targetName.toComponent()
             ), true)
             return
         }
-
+*/
         val success = when (type) {
             CrewArgType.ADD -> {
                 try {
@@ -103,7 +107,7 @@ class GNDHandler {
 
         sender.sendMessage(
             "content.crew.${type.name.lowercase()}.${if (success) "success" else "fail"}"
-                .translatable(target.name.toComponent()), true
+                .translatable(targetName.toComponent()), true
         )
     }
 

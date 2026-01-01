@@ -6,6 +6,7 @@ import io.papermc.paper.event.player.PlayerPickItemEvent
 import io.papermc.paper.event.player.PlayerPurchaseEvent
 import kr.astar.ground.Ground
 import kr.astar.ground.utils.Utils.getRegion
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -15,12 +16,12 @@ class GroundEventListener : Listener {
 
     private val groundManager = Ground.groundManager
 
-    private fun hasAccess(player: Player): Boolean {
+    private fun hasAccess(player: Player, location: Location?=null): Boolean {
         return try {
-            val regionId = player.getRegion()
+            val regionId = location?.getRegion() ?: player.getRegion()
             val ownerUUID = groundManager.getOwner(regionId)
             val crewList = groundManager.getCrewList(ownerUUID)
-            player.uniqueId in crewList || ownerUUID ==  player.uniqueId
+            player.uniqueId in crewList || ownerUUID ==  player.uniqueId /*|| player.isOp*/
         } catch (_: Exception) {
             true
         }
@@ -32,7 +33,7 @@ class GroundEventListener : Listener {
 
     @EventHandler
     fun PlayerInteractEvent.onInteraction() {
-        isCancelled = cancel(player)
+        isCancelled = !hasAccess(player, interactionPoint)
     }
 
     @EventHandler

@@ -49,6 +49,11 @@ class BukkitListener: Listener {
             groundManager.getGround(regionId)
         }.getOrNull()
 
+        if (existing?.owner==player.uniqueId) {
+            player.sendMessage("content.owner.is.you".translatable(), true)
+            return
+        }
+
         if (existing != null && existing.world == player.world.uid) {
             player.sendMessage("content.owner.exist".translatable(), true)
             return
@@ -57,7 +62,7 @@ class BukkitListener: Listener {
         val owned= groundManager.getOwned(player.uniqueId)
         if (owned.size>= groundManager.MAX_OWNED) {
             player.sendMessage("content.crew.maximum.ground.3".translatable(
-                "&c${groundManager.MAX_OWNED}".toComponent(), "&a${owned.size}".toComponent()
+                "&e최대&c: ${groundManager.MAX_OWNED}".toComponent(), "&e보유: &a${owned.size}".toComponent()
             ), true)
             return
         }

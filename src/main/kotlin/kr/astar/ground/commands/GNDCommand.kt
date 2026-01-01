@@ -1,5 +1,6 @@
 package kr.astar.ground.commands
 
+import kr.astar.ground.Ground
 import kr.astar.ground.commands.handler.GNDHandler
 import kr.astar.ground.enums.CrewArgType
 import kr.astar.ground.enums.SettingType
@@ -54,6 +55,9 @@ class GNDCommand: ClassicCommand(
             if (b=="땅제거") {
                 handler.handleSetting(sender, SettingType.REMOVE_GROUND, c)
             }
+            if (b=="언어파일로드") {
+                Ground.plugin.translateSet()
+            }
         }
         return true
     }
@@ -74,7 +78,7 @@ class GNDCommand: ClassicCommand(
 
             2 -> when (args[0]) {
                 "동거" -> tab.addAll(listOf("추가", "제거", "목록"))
-                "설정" -> tab.addAll(listOf("구매아이템", "땅접두사", "최대보유땅", "최대동거인원", "땅제거"))
+                "설정" -> tab.addAll(listOf("구매아이템", "땅접두사", "최대보유땅", "최대동거인원", "땅제거", "언어파일로드"))
             }
 
             3 -> when (args[0]) {

@@ -35,7 +35,7 @@ class GroundManager {
     private var cwFile = File(folder, "custom_welcome.yml")
 
     // 데이터 객체 생성
-    private var groundData = JsonObject()
+    private var groundData: JsonObject = JsonObject()
     private var usersData = JsonObject()
     private var itemData = YamlConfiguration.loadConfiguration(itemFile)
     private var cwData = YamlConfiguration.loadConfiguration(cwFile)
@@ -84,6 +84,7 @@ class GroundManager {
 
     // 땅 등록
     fun addGround(gnddata: GNData) {
+        load()
         val userKey = gnddata.owner.toString()
 
         val user = usersData[userKey]?.asJsonObject
@@ -108,6 +109,7 @@ class GroundManager {
 
     // 땅 정보 가져오기
     fun getGround(id: String): GNData {
+        load()
         val obj = groundData[id]?.asJsonObject ?: throw GroundNotFound(id)
 
         return GNData(
@@ -119,6 +121,7 @@ class GroundManager {
 
     // 모든 땅 목록 가져오기
     fun getGroundList(): List<GNData> {
+        load()
         return groundData.entrySet().map { (key, value) ->
             val obj = value.asJsonObject
             GNData(
@@ -130,6 +133,7 @@ class GroundManager {
     }
 
     fun getOwner(regionId: String): UUID {
+        load()
         val ground = groundData[regionId]?.asJsonObject
             ?: throw GroundNotFound(regionId)
         return UUID.fromString(ground["owner"].asString)
@@ -137,8 +141,9 @@ class GroundManager {
 
     // 땅 정보 제거
     fun removeGround(regionId: String) {
+        load()
         val ground = groundData[regionId]?.asJsonObject
-            ?: error("Ground not found: $regionId")
+            ?: return
         val owner = ground["owner"].asString
 
         groundData.remove(regionId)
@@ -157,6 +162,7 @@ class GroundManager {
 
     // 플레이어 소유 땅 목록
     fun getOwned(player: UUID): Set<String> {
+        load()
         val user = usersData[player.toString()]?.asJsonObject ?: return emptySet()
         val arr = user["owned"]?.asJsonArray ?: return emptySet()
         return arr.map { it.asString }.toSet()
@@ -164,6 +170,7 @@ class GroundManager {
 
     // 소유권 공유 멤버 목록
     fun getCrewList(uuid: UUID): Set<UUID> {
+        load()
         val user = usersData[uuid.toString()]?.asJsonObject ?: return emptySet()
         val arr = user["members"]?.asJsonArray ?: return emptySet()
         return arr.map { UUID.fromString(it.asString) }.toSet()
@@ -171,13 +178,14 @@ class GroundManager {
 
     // 소유권 공유 멤버 추가
     fun addCrew(uuid: UUID, member: UUID): Boolean {
+        load()
         try {
             if (getOwned(member).size>=MAX_OWNED) throw GroundMaximum()
 
-            val members=getCrewList(uuid)
+            val members=getCrewList(uuid).toMutableList()
             if (members.contains(member)) return false
-            members.toMutableList().add(member)
-            setCrewList(uuid, members)
+            members.add(member)
+            setCrewList(uuid, members.toSet())
 
             val player = Bukkit.getOfflinePlayer(uuid)
             player.addCrew(Bukkit.getOfflinePlayer(member))
@@ -188,21 +196,23 @@ class GroundManager {
 
     // 소유권 공유 멤버 제거
     fun removeCrew(uuid: UUID, member: UUID): Boolean {
+        load()
         try {
-            val members=getCrewList(uuid)
+            val members=getCrewList(uuid).toMutableList()
             if (!members.contains(member)) return false
-            members.toMutableList().remove(member)
-            setCrewList(uuid, members)
+            members.remove(member)
+            setCrewList(uuid, members.toSet())
 
             val player = Bukkit.getOfflinePlayer(uuid)
             player.removeCrew(Bukkit.getOfflinePlayer(member))
             removeCrew(member, uuid)
             return true
-        } catch (_: Exception) {return false}
+        } catch (_: Exception) { return false }
     }
 
     // 소유권 공유 멤버 목록 설정
     fun setCrewList(player: UUID, members: Set<UUID>) {
+        load()
         if (members.size >= MAX_MEMBER) error("too many members")
 
         val user = usersData[player.toString()]?.asJsonObject
@@ -218,6 +228,7 @@ class GroundManager {
 
     // 아이템 불러오기
     fun getItem(string: String): ItemStack {
+        load()
         itemFile = File(folder, "item")
         return decodeItem(itemData.getString(string))
             ?: error("Item not found: $string")
