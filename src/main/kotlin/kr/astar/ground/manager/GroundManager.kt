@@ -48,7 +48,7 @@ class GroundManager {
 
     init { load() }
 
-    object generator {
+    object Generator {
         private val wg = WorldGuard.getInstance()
         private val container = wg.platform.regionContainer
 

@@ -20,7 +20,7 @@ class GroundEventListener : Listener {
             val regionId = player.getRegion()
             val ownerUUID = groundManager.getOwner(regionId)
             val crewList = groundManager.getCrewList(ownerUUID)
-            player.uniqueId in crewList
+            player.uniqueId in crewList || ownerUUID ==  player.uniqueId
         } catch (_: Exception) {
             true
         }

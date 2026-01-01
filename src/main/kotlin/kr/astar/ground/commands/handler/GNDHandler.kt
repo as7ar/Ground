@@ -6,10 +6,8 @@ import kr.astar.ground.enums.SettingType
 import kr.astar.ground.exception.GroundMaximum
 import kr.astar.ground.exception.GroundNotFound
 import kr.astar.ground.manager.GroundManager
-import kr.astar.ground.utils.Utils
 import kr.astar.ground.utils.sendMessage
 import kr.astar.ground.utils.toComponent
-import kr.astar.ground.utils.toMiniMessage
 import kr.astar.ground.utils.translatable
 import net.kyori.adventure.text.event.ClickEvent
 import org.bukkit.Bukkit
@@ -145,7 +143,7 @@ class GNDHandler {
 
         if (type== SettingType.REMOVE_GROUND) {
             try {
-                GroundManager.generator.remove(sender, value)
+                GroundManager.Generator.remove(sender, value)
                 groundManager.removeGround(value)
                 sender.sendMessage("content.ground.remove.suc".translatable("&e${value}".toComponent()), true)
             } catch (_: GroundNotFound) {
