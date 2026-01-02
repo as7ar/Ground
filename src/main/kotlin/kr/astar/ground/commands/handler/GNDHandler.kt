@@ -57,7 +57,7 @@ class GNDHandler {
                 sender.sendMessage("content.crew.list.empty".translatable(), true)
             } else {
                 crews.forEach { uuid -> sender.sendMessage(
-                    "content.crew.list".translatable(uuid.toString().toComponent()),
+                    "content.crew.list".translatable(Bukkit.getOfflinePlayer(uuid).name.toString().toComponent()),
                     true
                 ) }
             }
@@ -81,7 +81,12 @@ class GNDHandler {
         val success = when (type) {
             CrewArgType.ADD -> {
                 try {
-                    groundManager.addCrew(sender.uniqueId, target.uniqueId)
+                    val result= groundManager.addCrew(sender.uniqueId, target.uniqueId)
+                    if (result) true
+                    else {
+                        sender.sendMessage("content.crew.maximum".translatable(), true)
+                        false
+                    }
                 } catch (m: GroundMaximum) {
                     sender.sendMessage("content.crew.maximum.ground.1".translatable(), true)
                     sender.sendMessage("content.crew.maximum.ground.2".translatable(), true)
@@ -130,9 +135,9 @@ class GNDHandler {
                 SettingType.GND_PREFIX ->
                     plugin.config.getString("region.prefix")
                 SettingType.MAX_OWNED_GROUND ->
-                    plugin.config.getInt("region.max-own")
-                SettingType.MAX_GROUND ->
                     plugin.config.getInt("region.max-members")
+                SettingType.MAX_GROUND ->
+                    plugin.config.getInt("region.max-own")
                 else -> "N/A"
             }
 

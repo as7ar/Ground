@@ -178,7 +178,8 @@ class GroundManager {
 
     // 소유권 공유 멤버 추가
     fun addCrew(uuid: UUID, member: UUID): Boolean {
-        if (getOwned(member).size >= MAX_OWNED) return false
+        if (getOwned(member).size+1 >= MAX_OWNED) throw GroundMaximum()
+        if (getCrewList(uuid).size+1 >= MAX_OWNED) return false
 
         fun internalAdd(uuid: UUID, member: UUID, mirror: Boolean): Boolean {
             val members = getCrewList(uuid).toMutableList()
