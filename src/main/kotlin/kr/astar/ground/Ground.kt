@@ -1,6 +1,7 @@
 package kr.astar.ground
 
 import kr.astar.ground.commands.GNDCommand
+import kr.astar.ground.commands.GNDAdminCommand
 import kr.astar.ground.listeners.BukkitListener
 import kr.astar.ground.listeners.EventListener
 import kr.astar.ground.listeners.GroundEventListener
@@ -52,6 +53,7 @@ class Ground : JavaPlugin() {
 
         debug("Loading Commands...")
         GNDCommand().register()
+        GNDAdminCommand().register()
     }
 
     fun translateSet() {
