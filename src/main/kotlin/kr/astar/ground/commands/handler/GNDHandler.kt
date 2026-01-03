@@ -135,9 +135,9 @@ class GNDHandler {
                 SettingType.GND_PREFIX ->
                     plugin.config.getString("region.prefix")
                 SettingType.MAX_OWNED_GROUND ->
-                    plugin.config.getInt("region.max-members")
-                SettingType.MAX_GROUND ->
                     plugin.config.getInt("region.max-own")
+                SettingType.MAX_GROUND ->
+                    plugin.config.getInt("region.max-members")
                 else -> "N/A"
             }
 
